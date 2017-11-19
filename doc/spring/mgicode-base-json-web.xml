@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-lazy-init="true" 
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:sca="http://www.springframework.org/schema/sca"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
+
+<!-- 	<bean name="_contextFilter" class="com.kuiren.spring.web.module.ProxyFilter"
+		lazy-init="false">
+		<property name="target">
+			<bean class="com.kuiren.spring.web.filter.ContextFilter" />
+		</property>
+		<property name="patterns" value="/*" />
+		<property name="order" value="-2147483648" />
+	</bean>
+ -->
+ 	<bean id="compressingFilter" class="com.kuiren.spring.web.module.ProxyFilter"
+		lazy-init="false">
+		<property name="target">
+			<bean
+				class="com.kuiren.common.servlet.CompressFilter" />
+		</property>
+		<property name="patterns" value="${mgicode.web.compression.resourceType}" />
+		<property name="excludings">
+			<list>
+				<value>/entry/validatelogin</value>
+			</list>
+		</property>
+		<property name="initParameters">
+			<props>
+				<prop key="compressionThreshold">1024</prop>
+			</props>
+		</property>
+		<property name="order" value="2147483647" />
+	</bean>
+	
+	<bean id="_easyUIServlet" class="com.kuiren.spring.web.module.ProxyServlet"
+		lazy-init="false">
+		<property name="target">
+			<bean class="com.kuiren.common.easyui.EasyUIServlet" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*.jsonServlet</value>
+				<value>*.eui</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="_checkCodeServlet" class="com.kuiren.spring.web.module.ProxyServlet"
+		lazy-init="false">
+		<property name="target">
+			<bean class="com.kuiren.common.servlet.CheckCodeServlet" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*.checkcode</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="_pageServlet" class="com.kuiren.spring.web.module.ProxyServlet"
+		lazy-init="false">
+		<property name="target">
+			<bean class="com.kuiren.common.easyui.PageServlet" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*${mgicode.page.ext}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="_continueMsgServlet" class="com.kuiren.spring.web.module.ProxyServlet"
+		lazy-init="false">
+		<property name="target">
+			<bean class="com.kuiren.common.msg.ContinueMsgServlet" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*.msg</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- 目前不用，如果需要换掉资源时使用 -->
+	<bean id="_resourceServlet" name="ResourceServlet"
+		class="com.kuiren.spring.web.module.ProxyServlet" lazy-init="false">
+		<property name="target">
+			<bean class="com.kuiren.common.servlet.ResourceServlet" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*.resource</value>
+				<value>*.res</value>
+			</list>
+		</property>
+		<property name="initParameters">
+			<props>
+				<prop key="location">themes</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean name="_config.js" class="com.kuiren.spring.web.module.ProxyServlet"
+		lazy-init="false">
+		<property name="target">
+			<bean class="${mgicode.jspServlet}" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>/js/config.js</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- <bean name="_ueditorconfig.js" class="com.kuiren.spring.web.module.ProxyServlet"
+		lazy-init="false">
+		<property name="target">
+			<bean class="${mgicode.jspServlet}" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>/ueditor/jsp/config.json</value>
+			</list>
+		</property>
+	</bean> -->
+</beans>
